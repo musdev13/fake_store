@@ -1,12 +1,9 @@
-import { Button } from "@/components/ui/button"
 import { FetchAPIStore } from "./components/FetchAPIStore"
 
 export function App() {
   return (
-    <div className="flex min-h-svh p-6">
-      <div className="flex max-w-3xl min-w-0 flex-col gap-4 text-sm leading-loose">
-        <FetchAPIStore></FetchAPIStore>
-      </div>
+    <div className="grid min-h-svh p-6">
+      <FetchAPIStore />
     </div>
   )
 }
