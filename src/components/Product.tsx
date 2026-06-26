@@ -2,11 +2,15 @@ interface ProductProps {
   title: string
   image: string
   price: string
+  onClick: () => void
 }
 
-export function Product({ title, image, price }: ProductProps) {
+export function Product({ title, image, price, onClick }: ProductProps) {
   return (
-    <div className="dark:hover:bg-slate-850 flex cursor-pointer items-center gap-3 rounded-lg border border-slate-100 p-2 transition hover:bg-slate-700 dark:border-slate-800">
+    <div
+      className="dark:hover:bg-slate-850 flex cursor-pointer items-center gap-3 rounded-lg border border-slate-100 p-2 transition hover:bg-slate-700 dark:border-slate-800"
+      onClick={onClick}
+    >
       <img
         src={image}
         alt={title}
