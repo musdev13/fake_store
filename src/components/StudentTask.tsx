@@ -1,5 +1,6 @@
-import React, { useState } from "react"
+import React, { useState, useRef } from "react"
 import { Button } from "./ui/button"
+import { musAPI } from "@/api/musAPI"
 
 interface User {
   id: number
@@ -43,13 +44,15 @@ export function StudentTask() {
     body: "",
   })
 
+  const abortControllerRef = useRef<AbortController | null>(null)
+
   // 1. GET ALL USERS (https://jsonplaceholder.typicode.com/users)
   const fetchUsers = async () => {
     setUsersLoading(true)
     setError(null)
     try {
-      // TODO: Реалізувати запит GET на https://jsonplaceholder.typicode.com/users
-      console.log("Fetch users placeholder")
+      const data = await musAPI.getUsers()
+      setUsers(data)
     } catch (err: any) {
       console.error(err)
       setError("Помилка завантаження користувачів")
@@ -60,16 +63,25 @@ export function StudentTask() {
 
   // 2. GET POSTS BY USER ID (https://jsonplaceholder.typicode.com/posts?userId={id})
   const fetchUserPosts = async (user: User) => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    const controller = new AbortController()
+    abortControllerRef.current = controller
+
     setSelectedUser(user)
     setPostsLoading(true)
     try {
-      // TODO: Реалізувати запит GET на https://jsonplaceholder.typicode.com/posts?userId={user.id}
-      // Підказка: використовуйте AbortController, щоб скасовувати попередній запит деталей, якщо користувач швидко клікає.
-      console.log(`Fetch posts for user ${user.id}`)
+      const data = await musAPI.getUserPosts(user.id, controller.signal)
+      setPosts(data)
     } catch (err: any) {
-      console.error(err)
+      if (err.name !== "CanceledError" && err.code !== "ERR_CANCELED") {
+        console.error(err)
+      }
     } finally {
-      setPostsLoading(false)
+      if (!controller.signal.aborted) {
+        setPostsLoading(false)
+      }
     }
   }
 
@@ -80,9 +92,13 @@ export function StudentTask() {
     
     setSubmitLoading(true)
     try {
-      // TODO: Реалізувати запит POST на https://jsonplaceholder.typicode.com/posts
-      // Тіло запиту: { title: postForm.title, body: postForm.body, userId: selectedUser.id }
-      console.log("Add post placeholder:", postForm)
+      const newPost = await musAPI.createPost({
+        title: postForm.title,
+        body: postForm.body,
+        userId: selectedUser.id,
+      })
+      
+      setPosts((prevPosts) => [newPost, ...prevPosts])
       
       // Очищення форми після успішного запиту
       setPostForm({ title: "", body: "" })
