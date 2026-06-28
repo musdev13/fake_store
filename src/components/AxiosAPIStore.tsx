@@ -1,6 +1,10 @@
 import React, { useState } from "react"
 import { Button } from "./ui/button"
-import { getProductDetailsAxios, getProductsAxios } from "@/api/apiAxiosStore"
+import {
+  getProductDetailsAxios,
+  getProductsAxios,
+  createProductAxios,
+} from "@/api/apiAxiosStore"
 import { AwardIcon } from "lucide-react"
 
 interface ProductItem {
@@ -14,7 +18,9 @@ interface ProductItem {
 
 export function AxiosAPIStore() {
   const [products, setProducts] = useState<ProductItem[]>([])
-  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null)
+  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(
+    null
+  )
   const [isLoading, setIsLoading] = useState(false)
   const [isDetailsLoading, setIsDetailsLoading] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -25,7 +31,8 @@ export function AxiosAPIStore() {
     price: "",
     description: "",
     category: "men's clothing",
-    image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
+    image:
+      "https://static.vecteezy.com/system/resources/thumbnails/051/069/395/small/product-icon-3d-render-illustration-image-png.png",
   })
 
   // 1. GET ALL PRODUCTS
@@ -33,8 +40,8 @@ export function AxiosAPIStore() {
     setIsLoading(true)
     try {
       // console.log("Load products placeholder")
-      const data = await getProductsAxios();
-      setProducts(data);
+      const data = await getProductsAxios()
+      setProducts(data)
     } catch (error) {
       console.error("Error loading products:", error)
     } finally {
@@ -47,8 +54,8 @@ export function AxiosAPIStore() {
     setIsDetailsLoading(true)
     try {
       // console.log(`Load product details for ID: ${id}`)
-      const data = await getProductDetailsAxios(id);
-      setSelectedProduct(data);
+      const data = await getProductDetailsAxios(id)
+      setSelectedProduct(data)
     } catch (error) {
       console.error("Error loading product details:", error)
     } finally {
@@ -61,16 +68,27 @@ export function AxiosAPIStore() {
     e.preventDefault()
     setIsSubmitting(true)
     try {
+      const newProduct = {
+        title: form.title,
+        price: parseFloat(form.price),
+        description: form.description,
+        category: form.category,
+        image: form.image,
+      }
+      const createProduct = await createProductAxios(newProduct)
+      console.log(createProduct)
+      setProducts([createProduct, ...products])
       // TODO: Implement POST request to https://fakestoreapi.com/products using Axios
       console.log("Create product placeholder with data:", form)
-      
+
       // Reset form
       setForm({
         title: "",
         price: "",
         description: "",
         category: "men's clothing",
-        image: "https://fakestoreapi.com/img/81fPKd-2AYL._AC_SL1500_.jpg",
+        image:
+          "https://static.vecteezy.com/system/resources/thumbnails/051/069/395/small/product-icon-3d-render-illustration-image-png.png",
       })
     } catch (error) {
       console.error("Error creating product:", error)
@@ -92,7 +110,7 @@ export function AxiosAPIStore() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-center text-4xl font-extrabold tracking-tight lg:text-5xl text-sky-655 dark:text-sky-400">
+      <h1 className="text-sky-655 text-center text-4xl font-extrabold tracking-tight lg:text-5xl dark:text-sky-400">
         Axios API Store
       </h1>
 
@@ -100,12 +118,14 @@ export function AxiosAPIStore() {
         {/* Form and fetch button section */}
         <div className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
           <div>
-            <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-250">
+            <h2 className="dark:text-slate-250 mb-4 text-xl font-semibold text-slate-800">
               Add New Product (POST)
             </h2>
             <form onSubmit={handleCreateProduct} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium mb-1 text-slate-500">Title</label>
+                <label className="mb-1 block text-xs font-medium text-slate-500">
+                  Title
+                </label>
                 <input
                   type="text"
                   required
@@ -117,7 +137,9 @@ export function AxiosAPIStore() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium mb-1 text-slate-500">Price</label>
+                <label className="mb-1 block text-xs font-medium text-slate-500">
+                  Price
+                </label>
                 <input
                   type="number"
                   required
@@ -130,18 +152,26 @@ export function AxiosAPIStore() {
               </div>
 
               <div>
-                <label className="block text-xs font-medium mb-1 text-slate-500">Description</label>
+                <label className="mb-1 block text-xs font-medium text-slate-500">
+                  Description
+                </label>
                 <textarea
                   required
                   placeholder="Enter description"
                   value={form.description}
-                  onChange={(e) => setForm({ ...form, description: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, description: e.target.value })
+                  }
                   className="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
                   rows={3}
                 />
               </div>
 
-              <Button type="submit" className="w-full bg-sky-600 hover:bg-sky-700" disabled={isSubmitting}>
+              <Button
+                type="submit"
+                className="w-full bg-sky-600 hover:bg-sky-700"
+                disabled={isSubmitting}
+              >
                 {isSubmitting ? "Creating..." : "Create Product"}
               </Button>
             </form>
@@ -150,21 +180,25 @@ export function AxiosAPIStore() {
           <hr className="border-slate-200 dark:border-slate-800" />
 
           <div>
-            <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-200">
+            <h2 className="mb-4 text-xl font-semibold text-slate-800 dark:text-slate-200">
               Fetch Control (GET)
             </h2>
-            <Button onClick={handleGetProducts} className="w-full" disabled={isLoading}>
+            <Button
+              onClick={handleGetProducts}
+              className="w-full"
+              disabled={isLoading}
+            >
               {isLoading ? "Loading products..." : "Get All Products"}
             </Button>
           </div>
         </div>
 
         {/* Products List Section */}
-        <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:col-span-1">
+        <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-1 dark:border-slate-800 dark:bg-slate-900">
           <h2 className="text-xl font-semibold text-slate-800 dark:text-slate-200">
             Products List
           </h2>
-          
+
           {isLoading && (
             <div className="flex h-40 items-center justify-center text-slate-500">
               Loading...
@@ -172,24 +206,24 @@ export function AxiosAPIStore() {
           )}
 
           {!isLoading && products.length === 0 && (
-            <div className="flex h-40 items-center justify-center text-slate-500 border-2 border-dashed border-slate-200 rounded-lg dark:border-slate-800">
+            <div className="flex h-40 items-center justify-center rounded-lg border-2 border-dashed border-slate-200 text-slate-500 dark:border-slate-800">
               No products loaded yet.
             </div>
           )}
 
-          <div className="max-h-[500px] overflow-y-auto space-y-2 pr-1">
+          <div className="max-h-[500px] space-y-2 overflow-y-auto pr-1">
             {!isLoading &&
               products.map((product) => (
                 <div
                   key={product.id}
                   onClick={() => handleGetProductDetails(product.id)}
-                  className="group flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-slate-100 p-2.5 transition hover:bg-slate-50 dark:border-slate-805 dark:hover:bg-slate-800"
+                  className="group dark:border-slate-805 flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-slate-100 p-2.5 transition hover:bg-slate-50 dark:hover:bg-slate-800"
                 >
-                  <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex min-w-0 items-center gap-3">
                     <img
                       src={product.image}
                       alt={product.title}
-                      className="h-10 w-10 rounded bg-white object-contain p-0.5 border border-slate-200"
+                      className="h-10 w-10 rounded border border-slate-200 bg-white object-contain p-0.5"
                     />
                     <div className="min-w-0">
                       <h3 className="truncate text-xs font-semibold text-slate-800 dark:text-slate-200">
@@ -200,7 +234,7 @@ export function AxiosAPIStore() {
                       </span>
                     </div>
                   </div>
-                  
+
                   <button
                     onClick={(e) => handleDeleteProduct(product.id, e)}
                     className="rounded p-1 text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950 dark:hover:text-red-400"
@@ -227,8 +261,8 @@ export function AxiosAPIStore() {
         </div>
 
         {/* Selected Product Details Section */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:col-span-1">
-          <h2 className="text-xl font-semibold mb-4 text-slate-800 dark:text-slate-200">
+        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm lg:col-span-1 dark:border-slate-800 dark:bg-slate-900">
+          <h2 className="mb-4 text-xl font-semibold text-slate-800 dark:text-slate-200">
             Product Details (GET by ID)
           </h2>
 
@@ -239,14 +273,14 @@ export function AxiosAPIStore() {
           )}
 
           {!isDetailsLoading && !selectedProduct && (
-            <div className="flex h-64 items-center justify-center text-slate-500 border-2 border-dashed border-slate-200 rounded-lg dark:border-slate-800">
+            <div className="flex h-64 items-center justify-center rounded-lg border-2 border-dashed border-slate-200 text-slate-500 dark:border-slate-800">
               Click a product to view details.
             </div>
           )}
 
           {!isDetailsLoading && selectedProduct && (
-            <div className="space-y-4 animate-fade-in">
-              <div className="flex justify-center bg-white p-4 rounded-lg border border-slate-100 dark:border-slate-800">
+            <div className="animate-fade-in space-y-4">
+              <div className="flex justify-center rounded-lg border border-slate-100 bg-white p-4 dark:border-slate-800">
                 <img
                   src={selectedProduct.image}
                   alt={selectedProduct.title}
@@ -257,7 +291,7 @@ export function AxiosAPIStore() {
                 <span className="inline-block rounded-full bg-sky-100 px-2 py-0.5 text-[10px] font-semibold text-sky-800 dark:bg-sky-950 dark:text-sky-300">
                   {selectedProduct.category}
                 </span>
-                <h3 className="mt-2 text-lg font-bold text-slate-800 dark:text-white leading-tight">
+                <h3 className="mt-2 text-lg leading-tight font-bold text-slate-800 dark:text-white">
                   {selectedProduct.title}
                 </h3>
                 <p className="mt-1 text-sm font-semibold text-slate-500 dark:text-slate-400">
@@ -266,7 +300,7 @@ export function AxiosAPIStore() {
                 <div className="mt-2 text-2xl font-black text-sky-600 dark:text-sky-400">
                   ${selectedProduct.price}
                 </div>
-                <p className="mt-4 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                <p className="mt-4 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                   {selectedProduct.description}
                 </p>
               </div>

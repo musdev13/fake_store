@@ -17,3 +17,8 @@ export const getProductDetailsAxios = async (id: number) => {
     const response = await apiClient.get(`/products/${id}`);
     return response.data;
 }
+
+export const createProductAxios = async (product : any ) =>{
+    const response =  await apiClient.post(`/products`, product);
+    return response.data;
+}
