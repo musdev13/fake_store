@@ -1,5 +1,7 @@
 import React, { useState } from "react"
 import { Button } from "./ui/button"
+import { getProductDetailsAxios, getProductsAxios } from "@/api/apiAxiosStore"
+import { AwardIcon } from "lucide-react"
 
 interface ProductItem {
   id: number
@@ -30,8 +32,9 @@ export function AxiosAPIStore() {
   const handleGetProducts = async () => {
     setIsLoading(true)
     try {
-      // TODO: Implement GET request to https://fakestoreapi.com/products using Axios
-      console.log("Load products placeholder")
+      // console.log("Load products placeholder")
+      const data = await getProductsAxios();
+      setProducts(data);
     } catch (error) {
       console.error("Error loading products:", error)
     } finally {
@@ -43,8 +46,9 @@ export function AxiosAPIStore() {
   const handleGetProductDetails = async (id: number) => {
     setIsDetailsLoading(true)
     try {
-      // TODO: Implement GET request to https://fakestoreapi.com/products/:id using Axios
-      console.log(`Load product details for ID: ${id}`)
+      // console.log(`Load product details for ID: ${id}`)
+      const data = await getProductDetailsAxios(id);
+      setSelectedProduct(data);
     } catch (error) {
       console.error("Error loading product details:", error)
     } finally {
