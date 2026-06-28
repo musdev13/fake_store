@@ -4,6 +4,7 @@ import {
   getProductDetailsAxios,
   getProductsAxios,
   createProductAxios,
+  deleteProduct
 } from "@/api/apiAxiosStore"
 import { AwardIcon } from "lucide-react"
 
@@ -102,7 +103,9 @@ export function AxiosAPIStore() {
     e.stopPropagation() // Prevent selecting product
     try {
       // TODO: Implement DELETE request to https://fakestoreapi.com/products/:id using Axios
-      console.log(`Delete product ID: ${id}`)
+      await deleteProduct(id);
+      console.log(`Delete product ID: ${id}`);
+      setProducts(products.filter((product) => product.id !== id));
     } catch (error) {
       console.error("Error deleting product:", error)
     }
