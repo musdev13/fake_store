@@ -117,6 +117,36 @@ export function AxiosAPIStore() {
         Axios API Store
       </h1>
 
+      {/* Task Card for students to refactor this page using TanStack Query */}
+      <div className="rounded-xl border border-sky-200 bg-sky-50/50 p-6 shadow-sm dark:border-sky-900/30 dark:bg-sky-950/10 space-y-4">
+        <h2 className="text-xl font-bold text-sky-850 dark:text-sky-400 flex items-center gap-2">
+          🚀 Завдання для самостійної роботи: Refactoring to TanStack Query
+        </h2>
+        <p className="text-sm text-slate-700 dark:text-slate-350 leading-relaxed">
+          Вам потрібно переробити цей компонент (<code>AxiosAPIStore.tsx</code>) з використанням бібліотеки <strong>TanStack Query (React Query)</strong> замість звичайного використання <code>useState</code> та ручних асинхронних викликів Axios.
+        </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-600 dark:text-slate-400">
+          <div className="space-y-2">
+            <h3 className="font-semibold text-sky-700 dark:text-sky-500">Основні кроки:</h3>
+            <ul className="list-disc pl-4 space-y-1">
+              <li>Огорнути додаток у <code>QueryClientProvider</code> у файлі <code>src/main.tsx</code>.</li>
+              <li>Замінити `products` стейт та `handleGetProducts` на хук <code>useQuery</code> із ключем <code>["products"]</code>.</li>
+              <li>Перевести завантаження деталей вибраного продукту (GET за ID) на <code>useQuery</code> із ключем <code>["product", id]</code>. Запит має виконуватися залежно від обраного продукту (<code>enabled: selectedProductId !== null</code>).</li>
+              <li>Замінити `handleCreateProduct` на <code>useMutation</code>. При успішному виконанні мутації інвалідувати кеш продуктів (<code>queryClient.invalidateQueries</code>), щоб автоматично оновити список.</li>
+              <li>Замінити `handleDeleteProduct` на <code>useMutation</code> та інвалідувати список продуктів після успішного видалення.</li>
+            </ul>
+          </div>
+          <div className="space-y-2">
+            <h3 className="font-semibold text-sky-700 dark:text-sky-500">Додаткові вимоги:</h3>
+            <ul className="list-disc pl-4 space-y-1">
+              <li>Додати індикатор фонового оновлення <code>isFetching</code> біля заголовка списку товарів.</li>
+              <li>Використовувати прапорці <code>isPending</code> та <code>isError</code> з <code>useQuery</code> для відображення відповідних станів завантаження та помилок.</li>
+              <li>Встановити глобальний <code>staleTime</code> в 1 хвилину, а <code>gcTime</code> в 5 хвилин у конфігурації клієнта.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Form and fetch button section */}
         <div className="space-y-6 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
