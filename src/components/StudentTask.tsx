@@ -210,7 +210,7 @@ export function StudentTask() {
             </div>
           )}
 
-          <div className="max-h-[400px] overflow-y-auto space-y-2 pr-1">
+          <div className="max-h-100 overflow-y-auto space-y-2 pr-1">
             {!usersLoading &&
               filteredUsers.map((user) => (
                 <div
@@ -258,7 +258,7 @@ export function StudentTask() {
             </div>
           )}
 
-          <div className="max-h-[450px] overflow-y-auto space-y-3 pr-1">
+          <div className="max-h-112.5 overflow-y-auto space-y-3 pr-1">
             {!postsLoading && selectedUser &&
               posts.map((post) => (
                 <div
