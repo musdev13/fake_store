@@ -144,7 +144,7 @@ export function FetchAPIStore() {
             </div>
           )}
 
-          <div className="max-h-[500px] overflow-y-auto space-y-2 pr-1">
+          <div className="max-h-125 overflow-y-auto space-y-2 pr-1">
             {!isLoader &&
               products.map((product) => (
                 <Product
